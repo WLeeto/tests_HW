@@ -2,24 +2,17 @@ import unittest
 from parameterized import parameterized
 from unittest.mock import patch, Mock
 from Tests_HW.main import *
-
-
-# FIXTURES_doc_num = [
-#     ("2207 876234", True),
-#     ("11-2", True),
-#     ("10006", True),
-#     ("223 322", False)
-# ]
-#
-# FIXTURES_doc_owner_name = [
-#     ("2207 876234", "Василий Гупкин"),
-#     ("11-2", "Геннадий Покемонов"),
-#     ("10006", "Аристарх Павлов"),
-#     ("223 322", None)
-# ]
+from Tests_HW.ya_api import Ya_api
 
 
 class TestFunctions(unittest.TestCase):
+    def tearDown(self):
+        with open('D:\Python\Tests_HW\ya_token.txt') as token:
+            ya_token = token.read()
+        api = Ya_api(ya_token)
+        folder_name = "new"
+        api.delete_folder(folder_name)
+
     # В этой функции input() не вынесен, чтобы попробовать patch
     def test_what_person(self):
         with patch('builtins.input', return_value='2207 876234'):
@@ -46,11 +39,13 @@ class TestFunctions(unittest.TestCase):
         result = 'Документ 2 на имя 3 добавлен на полку № 1'
         self.assertEqual(add_document(dict, "1"), result)
 
-    # Пример добавления параметров
-    # @parameterized.expand(FIXTURES_doc_num)
-    # def test_check_document_existance(self, a, exp_res):
-    #     result = check_document_existance(a)
-    #     self.assertEqual(result, exp_res)
+    def test_create_folder(self):
+        with open('D:\Python\Tests_HW\ya_token.txt') as token:
+            ya_token = token.read()
+        api = Ya_api(ya_token)
+        folder_name = "new"
+        result = 201
+        self.assertEqual(api.create_folder(folder_name), result)
 
 
 
